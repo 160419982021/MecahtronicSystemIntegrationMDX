@@ -1,0 +1,96 @@
+//Timer 
+"IEC_Timer_0_DB_1".TON(IN:="Timer1Start_TON",
+                       PT:=t#3s, Q=>"Timer1Finished_TON");
+
+CASE #Step OF
+    0:
+        "ConveyorOn" := false;
+        "Slide 1 Separator On" := false;
+        "Slide 2 Separator On" := false;
+        "Retract Workpiece Stopper" := false;
+        
+        "Timer1Start_TON" := 0;
+        "Timer1Finished_TON" := 0;
+        
+        #Step := 10;
+        
+    10:
+        IF "Workpiece Sensor" THEN
+            "ConveyorOn" := true;
+            "Slide 1 Separator On" := false;
+            "Slide 2 Separator On" := false;
+            "Retract Workpiece Stopper" := TRUE;//CHANGED was false
+            
+            "Timer1Start_TON" := 1;
+            "Timer1Finished_TON" := 0;
+            
+            #Step := 20;
+        END_IF;
+        
+        
+    20:
+        IF "Workpiece Silver Sensor" AND "Workpiece Red Sensor" AND "Timer1Finished_TON"THEN //SILVER
+            "ConveyorOn" := true;
+            "Slide 1 Separator On" := TRUE;
+            "Slide 2 Separator On" := false;
+            "Retract Workpiece Stopper" := TRUE; //CHANGED was false
+                        
+            "Timer1Finished_TON" := FALSE;
+                        
+            #Step := 30;
+        ELSIF "Workpiece Red Sensor" AND NOT "Workpiece Silver Sensor" AND "Timer1Finished_TON" THEN //RED
+            "ConveyorOn" := true;
+            "Slide 1 Separator On" := false;
+            "Slide 2 Separator On" := true;
+            "Retract Workpiece Stopper" := FALSE; 
+            
+                    
+            "Timer1Finished_TON" := FALSE;
+                    
+            #Step := 40;
+        ELSIF NOT "Workpiece Red Sensor" AND NOT "Workpiece Silver Sensor" AND "Timer1Finished_TON" THEN //BLACK
+            "ConveyorOn" := true;
+            "Slide 1 Separator On" := false;
+            "Slide 2 Separator On" := false;
+            "Retract Workpiece Stopper" := false;
+            
+            "Timer1Finished_TON" := FALSE;
+            
+            #Step := 60;
+        END_IF;
+        
+
+        
+        
+      
+    30:
+        IF "Slide 1 Cylinder Extended" THEN
+            "ConveyorOn" := true;
+            "Slide 1 Separator On" := True;
+            "Slide 2 Separator On" := FALSE;
+            "Retract Workpiece Stopper" := FALSE;
+            #Step := 60;
+        END_IF;
+        
+        
+
+        
+    40:
+        IF "Slide 2 Cylinder Extended" THEN
+            "ConveyorOn" := true;
+            "Slide 1 Separator On" := False;
+            "Slide 2 Separator On" := true;
+            "Retract Workpiece Stopper" := FALSE;
+            #Step := 60;
+        END_IF;
+        
+    60:
+        IF "Workpiece in Slide" THEN
+            "ConveyorOn" := FALSE;
+            "Slide 1 Separator On" := FALSE;
+            "Slide 2 Separator On" := FALSE;
+            "Retract Workpiece Stopper" := TRUE;
+            #Step := 0;
+        END_IF;
+
+END_CASE;
