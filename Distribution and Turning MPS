@@ -1,0 +1,503 @@
+//Timer distribution
+
+"IEC_Timer_0_DB_2".TON(IN := "Timer2Start_TON",
+                       PT := t#3s,
+                       Q => "Timer2Finished_TON");
+
+
+//Timer turning
+
+"IEC_Timer_0_DB_3".TON(IN := "Timer3Start_TON",
+                       PT := t#1s,
+                       Q => "Timer3Finished_TON");
+
+
+CASE #Step OF
+    0: //Initial Conditions Distribution and Turning MPS STATION
+        
+        //Smart Light With Buzzer
+        //Operation Mode
+        "Mode_Segment" := FALSE;
+        "Mode_Level" := FALSE;
+        "Mode_Running" := FALSE;
+        "Mode_Flexible" := FALSE;
+        
+        //Colour and blinking
+        "1st_Segment_xxN" := FALSE;
+        "1st_Segment_xNx" := FALSE;
+        "1st_Segment_Nxx" := FALSE;
+        "1st_Segment_Blink" := FALSE;
+        
+        "2nd_Segment_xxN" := FALSE;
+        "2nd_Segment_xNx" := FALSE;
+        "2nd_Segment_Nxx" := FALSE;
+        "2nd_Segment_Blink" := FALSE;
+        
+        "3er_Segment_xxN" := FALSE;
+        "3er_Segment_xNx" := FALSE;
+        "3er_Segment_Nxx" := FALSE;
+        "3er_Segment_Blink" := FALSE;
+        
+        //Colour
+        //000= Off
+        //001= Green
+        //010= Red
+        //011= Yellow
+        //100= Blue
+        //101= Orange
+        //110= User defined
+        //111= White
+        
+        //Buzzer
+        "Buzzer ON/OFF" := FALSE;
+        "BuzzerVolume" := FALSE;
+        
+        //BuzzerType
+        "BuzzerType_4" := FALSE;
+        "BuzzerType_5" := FALSE;
+        
+        //Distribution
+        "ConveyorRight_1F" := FALSE;
+        "ConveyorLeft_1F" := false;
+        
+        "Stopper_1F" := false;
+        "ExtendCylinder_1F" := false;
+        
+        
+        "Timer2Start_TON" := 0;
+        "Timer2Finished_TON" := 0;
+        
+        //Turning Module
+        
+        "TurningWorkpiece_2T" := FALSE;
+        "CloseClap_Gripper_2T" := FALSE;
+        
+        "MoveTurningPosition_2T" := TRUE;
+        "MoveCollectPosition_2T" := FALSE;
+        
+        "Timer3Start_TON" := 0;
+        "Timer3Finished_TON" := 0;
+        
+        #Step := 10;
+        
+        
+    10: //Detect Workpiece and Start timer 5 seconds
+        
+        //Smart Light With Buzzer
+        //Operation Mode
+        "Mode_Segment" := FALSE;
+        "Mode_Level" := FALSE;
+        "Mode_Running" := TRUE;
+        "Mode_Flexible" := FALSE;
+        
+        //Colour and blinking
+        //Yellow-Blinking
+        "1st_Segment_xxN" := TRUE;
+        "1st_Segment_xNx" := FALSE;
+        "1st_Segment_Nxx" := FALSE;
+        "1st_Segment_Blink" := TRUE;
+        
+        "2nd_Segment_xxN" := FALSE;
+        "2nd_Segment_xNx" := TRUE;
+        "2nd_Segment_Nxx" := FALSE;
+        "2nd_Segment_Blink" := TRUE;
+        
+        "3er_Segment_xxN" := TRUE;
+        "3er_Segment_xNx" := TRUE;
+        "3er_Segment_Nxx" := FALSE;
+        "3er_Segment_Blink" := TRUE;
+        
+        //Buzzer
+        "Buzzer ON/OFF" := FALSE;//change to TRUE final code
+        "BuzzerVolume" := TRUE;
+        
+        
+        //BuzzerType
+        "BuzzerType_4" := FALSE;
+        "BuzzerType_5" := FALSE;
+        
+        IF NOT "Sensor_WorkpieceFedder_1F 1=Empty; 0=Workpiece" THEN
+            //"ConveyorRight_1F" := false;
+            //"ConveyorLeft_1F" := TRUE;
+            //"Stopper_1F" := TRUE;
+            //"ExtendCylinder_1F" := TRUE;
+            
+            //Buzzer
+            "Buzzer ON/OFF" := FALSE;
+            
+            //BuzzerType
+            "BuzzerType_4" := FALSE;
+            "BuzzerType_5" := FALSE;
+            
+            "Timer2Start_TON" := 1;
+            "Timer2Finished_TON" := 0;
+            
+            #Step := 20;
+        END_IF;
+        
+    20: //After timer 5 seconds has been completed
+        IF "Timer2Finished_TON" THEN
+            
+            //Smart Light With Buzzer
+            //Operation Mode
+            "Mode_Segment" := TRUE;
+            "Mode_Level" := FALSE;
+            "Mode_Running" := FALSE;
+            "Mode_Flexible" := FALSE;
+            
+            //Colour and blinking
+            //Green-No Blinking
+            "1st_Segment_xxN" := TRUE;
+            "1st_Segment_xNx" := FALSE;
+            "1st_Segment_Nxx" := FALSE;
+            "1st_Segment_Blink" := FALSE;
+            
+            "2nd_Segment_xxN" := TRUE;
+            "2nd_Segment_xNx" := FALSE;
+            "2nd_Segment_Nxx" := FALSE;
+            "2nd_Segment_Blink" := FALSE;
+            
+            "3er_Segment_xxN" := TRUE;
+            "3er_Segment_xNx" := FALSE;
+            "3er_Segment_Nxx" := FALSE;
+            "3er_Segment_Blink" := FALSE;
+            
+            //Buzzer
+            "Buzzer ON/OFF" := FALSE;
+            "BuzzerVolume" := FALSE;
+            
+            
+            //BuzzerType
+            "BuzzerType_4" := FALSE;
+            "BuzzerType_5" := FALSE;
+            
+            "ConveyorRight_1F" := false;
+            "ConveyorLeft_1F" := TRUE;
+            
+            "Stopper_1F" := TRUE;
+            "ExtendCylinder_1F" := TRUE;
+            
+            
+            "Timer2Start_TON" := 0;
+            "Timer2Finished_TON" := 0;
+            
+            #Step := 30;
+        END_IF;
+        
+    30: //Retract cylinder
+        IF "Sensor_CylinderExtended_1F" THEN
+            
+            //Smart Light With Buzzer
+            //Operation Mode
+            "Mode_Segment" := TRUE;
+            "Mode_Level" := FALSE;
+            "Mode_Running" := FALSE;
+            "Mode_Flexible" := FALSE;
+            
+            //Colour and blinking
+            //Green-No Blinking
+            "1st_Segment_xxN" := TRUE;
+            "1st_Segment_xNx" := FALSE;
+            "1st_Segment_Nxx" := FALSE;
+            "1st_Segment_Blink" := FALSE;
+            
+            "2nd_Segment_xxN" := FALSE;
+            "2nd_Segment_xNx" := FALSE;
+            "2nd_Segment_Nxx" := FALSE;
+            "2nd_Segment_Blink" := FALSE;
+            
+            "3er_Segment_xxN" := FALSE;
+            "3er_Segment_xNx" := FALSE;
+            "3er_Segment_Nxx" := FALSE;
+            "3er_Segment_Blink" := FALSE;
+            
+            
+            "ConveyorRight_1F" := false;
+            "ConveyorLeft_1F" := TRUE;
+            "Stopper_1F" := TRUE;
+            "ExtendCylinder_1F" := FALSE;
+            #Step := 31;
+        END_IF;
+    31:
+        //Start timer
+        "Timer2Start_TON" := 1;
+        "Timer2Finished_TON" := 0;
+        #Step := 40;
+        
+    40:
+        IF "Sensor_CylinderRetracted_1F" AND "Timer2Finished_TON" AND "Sensor_High_1F" THEN //LEFT
+            "ConveyorRight_1F" := false;
+            "ConveyorLeft_1F" := TRUE;
+            "Stopper_1F" := FALSE;
+            
+            "Timer2Start_TON" := 0;
+            "Timer2Finished_TON" := 0;
+            
+            
+            #Step := 50; //SENSOR LEFT NOT WORKING CAN NOT CONTINUE //50
+            
+            //NOT WORKING TOWARDS RIGHT
+        ELSIF "Sensor_CylinderRetracted_1F" AND "Timer2Finished_TON" AND NOT "Sensor_High_1F" THEN //right
+            "ConveyorLeft_1F" := FALSE;
+            "ConveyorRight_1F" := FALSE;
+            // "Stopper_1F" := FALSE;
+            
+             "Timer2Start_TON" := 0;
+             "Timer2Finished_TON" := 0;
+            
+            
+            #Step := 59;//59-100
+            
+        END_IF;
+        
+    50: //Conveyor move to LEFT
+        "Timer2Start_TON" := 1;
+        "Timer2Finished_TON" := 0;
+        #Step := 51;
+        
+    51: //LEFT
+        IF "Timer2Finished_TON" THEN
+            "Timer2Start_TON" := 0;
+            "Timer2Finished_TON" := 0;
+            #Step := 70; //STEP TO 0 only distribution
+        END_IF;
+        
+        
+    59:    //RIGHT
+        "ConveyorRight_1F" := FALSE;
+        "ConveyorLeft_1F" := FALSE;
+        
+        "Timer2Start_TON" := 1;
+        "Timer2Finished_TON" := 0;
+        #Step := 60;
+        
+    60:    //RIGHT
+        IF "Timer2Finished_TON" THEN
+            "ConveyorRight_1F" := TRUE;
+            "ConveyorLeft_1F" := FALSE;
+            
+            //"Timer2Start_TON" := 1;
+            //"Timer2Finished_TON" := 0;
+            #Step := 61;
+        END_IF;
+        
+    61:    //RIGHT
+        
+        "ConveyorRight_1F" := TRUE;
+        "ConveyorLeft_1F" := FALSE;
+        
+        "Timer2Start_TON" := 0;
+        "Timer2Finished_TON" := 0;
+        #Step := 62;
+        
+    62:    //RIGHT
+        IF NOT "Sensor_RightStation_1F 1=Empty; 0=Workpiece RIGHT" THEN //AND "Timer2Finished_TON" THEN
+            "ConveyorRight_1F" := TRUE;
+            "ConveyorLeft_1F" := FALSE;
+            "Stopper_1F" := FALSE;
+            
+            "Timer2Start_TON" := 1;
+            "Timer2Finished_TON" := 0;
+            #Step := 200;
+        END_IF;
+        
+    200:
+        IF "Timer2Finished_TON" THEN
+            #Step := 0;
+        END_IF;
+        
+        (*
+        
+            62:    //RIGHT
+        IF NOT "Sensor_RightStation_1F 1=Empty; 0=Workpiece RIGHT" THEN //AND "Timer2Finished_TON" THEN
+            "ConveyorRight_1F" := TRUE;
+            "ConveyorLeft_1F" := FALSE;
+            "Stopper_1F" := TRUE;
+            
+            "Timer2Start_TON" := 0;
+            "Timer2Finished_TON" := 0;
+            #Step := 0;
+        END_IF;
+        
+*)
+        
+        //Start the turning module
+        
+    70:
+        IF "Sensor_LeftStation_1F 1=Workpiece; 0=Empty LEFT" THEN // //IF"SensorNotWorking" THEN
+            "Timer3Start_TON" := 1;
+            "Timer3Finished_TON" := 0;
+            #Step := 80;
+        END_IF;
+        
+    80:
+        IF "Timer3Finished_TON" THEN
+            
+            "TurningWorkpiece_2T" := FALSE;
+            "CloseClap_Gripper_2T" := FALSE;
+            
+            "MoveTurningPosition_2T" := FALSE;
+            "MoveCollectPosition_2T" := TRUE;
+            
+            "ConveyorRight_1F" := FALSE;
+            "ConveyorLeft_1F" := FALSE;
+            
+            "Timer3Start_TON" := 0;
+            "Timer3Finished_TON" := 0;
+            
+            #Step := 90;
+        END_IF;
+        
+    90://close grip
+        IF "SensorCollectPosition_2T" THEN
+            
+            "TurningWorkpiece_2T" := FALSE;
+            "CloseClap_Gripper_2T" := TRUE;
+            
+            "MoveTurningPosition_2T" := FALSE;
+            "MoveCollectPosition_2T" := TRUE;
+            
+            "Timer3Start_TON" := 1;
+            "Timer3Finished_TON" := 0;
+            
+            #Step := 100;
+        END_IF;
+        
+    100://move turning position
+        IF "SensorClapClose_2T" AND "Timer3Finished_TON" THEN
+            
+            "TurningWorkpiece_2T" := FALSE;
+            "CloseClap_Gripper_2T" := TRUE;
+            
+            "MoveTurningPosition_2T" := TRUE;
+            "MoveCollectPosition_2T" := FALSE;
+            
+            "Timer3Start_TON" := 0;
+            "Timer3Finished_TON" := 0;
+            
+            #Step := 110;
+        END_IF;
+        
+    110:// turning workpiece
+        IF "SensorClapClose_2T" AND "SensorTurningPosition_2T" THEN
+            
+            "TurningWorkpiece_2T" := TRUE;
+            "CloseClap_Gripper_2T" := TRUE;
+            
+            "MoveTurningPosition_2T" := TRUE;
+            "MoveCollectPosition_2T" := FALSE;
+            
+            "Timer3Start_TON" := 0;
+            "Timer3Finished_TON" := 0;
+            
+            #Step := 120;
+        END_IF;
+        
+    120:// move collect position
+        IF "SensorBSide_2T" THEN
+            
+            "TurningWorkpiece_2T" := TRUE;
+            "CloseClap_Gripper_2T" := TRUE;
+            
+            "MoveTurningPosition_2T" := FALSE;
+            "MoveCollectPosition_2T" := TRUE;
+            
+            "ConveyorRight_1F" := FALSE;
+            "ConveyorLeft_1F" := FALSE;
+            
+            "Timer3Start_TON" := 1;
+            "Timer3Finished_TON" := 0;
+            
+            #Step := 130;
+        END_IF;
+        
+        
+        
+    130:// open grip
+        IF "SensorCollectPosition_2T" AND "SensorBSide_2T" AND "Timer3Finished_TON" THEN
+            
+            "TurningWorkpiece_2T" := TRUE;
+            "CloseClap_Gripper_2T" := FALSE;
+            
+            "MoveTurningPosition_2T" := FALSE;
+            "MoveCollectPosition_2T" := TRUE;
+            
+            "Timer3Start_TON" := 0;
+            "Timer3Finished_TON" := 0;
+            
+            #Step := 131;
+        END_IF;
+        
+    131:
+        "Timer3Start_TON" := 1;
+        "Timer3Finished_TON" := 0;
+        #Step := 140;
+        
+    140:// move turning position
+        IF "SensorCollectPosition_2T" AND "SensorBSide_2T" AND "SensorClapOpen_2T" AND "Timer3Finished_TON" THEN
+            
+            "TurningWorkpiece_2T" := TRUE;
+            "CloseClap_Gripper_2T" := FALSE;
+            
+            "MoveTurningPosition_2T" := TRUE;
+            "MoveCollectPosition_2T" := FALSE;
+            
+            "Timer3Start_TON" := 0;
+            "Timer3Finished_TON" := 0;
+            #Step := 150;
+            
+        END_IF;
+        
+    150:// turning workpiece initial state
+        IF "SensorTurningPosition_2T" THEN
+            
+            "TurningWorkpiece_2T" := FALSE;
+            "CloseClap_Gripper_2T" := FALSE;
+            
+            "MoveTurningPosition_2T" := TRUE;
+            "MoveCollectPosition_2T" := FALSE;
+            
+            "ConveyorRight_1F" := FALSE;
+            "ConveyorLeft_1F" := FALSE;
+            
+            "Timer3Start_TON" := 0;
+            "Timer3Finished_TON" := 0;
+            #Step := 59;//Move right
+            
+        END_IF;
+      
+        
+END_CASE;
+
+
+
+
+
+
+
+
+
+(*
+
+CASE #Step OF
+    0:
+        "TurningWorkpiece_2T" := FALSE;
+        "CloseClap_Gripper_2T" := FALSE;
+        
+        "MoveTurningPosition_2T" := TRUE;
+        "MoveCollectPosition_2T" := FALSE;
+        
+        "Timer3Start_TON" := 0;
+        "Timer3Finished_TON" := 0;
+        
+        #Step := 10;
+        
+END_CASE;
+        *)
+        
+
+
+
+
+
+
