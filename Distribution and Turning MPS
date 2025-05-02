@@ -150,7 +150,7 @@ CASE #Step OF
             "1st_Segment_xxN" := TRUE;
             "1st_Segment_xNx" := FALSE;
             "1st_Segment_Nxx" := FALSE;
-            "1st_Segment_Blink" := FALSE;
+            "1st_Segment_Blink" := TRUE;
             
             "2nd_Segment_xxN" := TRUE;
             "2nd_Segment_xNx" := FALSE;
@@ -195,11 +195,11 @@ CASE #Step OF
             "Mode_Flexible" := FALSE;
             
             //Colour and blinking
-            //Green-No Blinking
+            //Green- Blinking
             "1st_Segment_xxN" := TRUE;
             "1st_Segment_xNx" := FALSE;
             "1st_Segment_Nxx" := FALSE;
-            "1st_Segment_Blink" := FALSE;
+            "1st_Segment_Blink" := TRUE;
             
             "2nd_Segment_xxN" := FALSE;
             "2nd_Segment_xNx" := FALSE;
@@ -264,6 +264,30 @@ CASE #Step OF
         
         
     59:    //RIGHT
+        
+        //Smart Light With Buzzer
+        //Operation Mode
+        "Mode_Segment" := TRUE;
+        "Mode_Level" := FALSE;
+        "Mode_Running" := FALSE;
+        "Mode_Flexible" := FALSE;
+        
+        //Colour and blinking
+        "1st_Segment_xxN" := TRUE;
+        "1st_Segment_xNx" := FALSE;
+        "1st_Segment_Nxx" := FALSE;
+        "1st_Segment_Blink" := TRUE;
+        
+        "2nd_Segment_xxN" := FALSE;
+        "2nd_Segment_xNx" := FALSE;
+        "2nd_Segment_Nxx" := FALSE;
+        "2nd_Segment_Blink" := FALSE;
+        
+        "3er_Segment_xxN" := FALSE;
+        "3er_Segment_xNx" := FALSE;
+        "3er_Segment_Nxx" := FALSE;
+        "3er_Segment_Blink" := FALSE;
+        
         "ConveyorRight_1F" := FALSE;
         "ConveyorLeft_1F" := FALSE;
         
@@ -333,6 +357,29 @@ CASE #Step OF
     80:
         IF "Timer3Finished_TON" THEN
             
+            //Smart Light With Buzzer
+            //Operation Mode
+            "Mode_Segment" := TRUE;
+            "Mode_Level" := FALSE;
+            "Mode_Running" := FALSE;
+            "Mode_Flexible" := FALSE;
+            
+            //Colour and blinking
+            "1st_Segment_xxN" := FALSE;
+            "1st_Segment_xNx" := FALSE;
+            "1st_Segment_Nxx" := FALSE;
+            "1st_Segment_Blink" := FALSE;
+            
+            "2nd_Segment_xxN" := FALSE;
+            "2nd_Segment_xNx" := FALSE;
+            "2nd_Segment_Nxx" := TRUE;
+            "2nd_Segment_Blink" := TRUE;
+            
+            "3er_Segment_xxN" := FALSE;
+            "3er_Segment_xNx" := FALSE;
+            "3er_Segment_Nxx" := FALSE;
+            "3er_Segment_Blink" := FALSE;
+            
             "TurningWorkpiece_2T" := FALSE;
             "CloseClap_Gripper_2T" := FALSE;
             
@@ -365,6 +412,8 @@ CASE #Step OF
         
     100://move turning position
         IF "SensorClapClose_2T" AND "Timer3Finished_TON" THEN
+            
+            
             
             "TurningWorkpiece_2T" := FALSE;
             "CloseClap_Gripper_2T" := TRUE;
