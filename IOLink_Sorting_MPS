@@ -4,6 +4,12 @@
 
 CASE #Step OF
     0:
+        //Segment Light
+        "ColorA" := false;
+        "ColorB" := false;
+        "ColorC" := false;
+        "Blinking" := false;
+        
         "ConveyorOn" := false;
         "Slide 1 Separator On" := false;
         "Slide 2 Separator On" := false;
@@ -12,14 +18,35 @@ CASE #Step OF
         "Timer1Start_TON" := 0;
         "Timer1Finished_TON" := 0;
         
+        // "Slide1_SilverCounter" := 0;
+        // "Slide2_RedCounter" := 0;
+        // "Slide3_BlackCounter" := 0;
+        "Total_WorkpiecesCounter" := 0;
+        
+        
         #Step := 10;
         
     10:
+        
+        "ColorA" := false;
+        "ColorB" := false;
+        "ColorC" := false;
+        "Blinking" := false;
+        
+        
+        
+        
+        
         IF "Workpiece Sensor" THEN
             "ConveyorOn" := true;
             "Slide 1 Separator On" := false;
             "Slide 2 Separator On" := false;
             "Retract Workpiece Stopper" := TRUE;//CHANGED was false
+            
+            "ColorA" := TRUE;
+            "ColorB" := TRUE;
+            "ColorC" := TRUE;
+            "Blinking" := TRUE;
             
             "Timer1Start_TON" := 1;
             "Timer1Finished_TON" := 0;
@@ -90,7 +117,29 @@ CASE #Step OF
             "Slide 1 Separator On" := FALSE;
             "Slide 2 Separator On" := FALSE;
             "Retract Workpiece Stopper" := TRUE;
-            #Step := 0;
+            
+            "Total_WorkpiecesCounter" := "Total_WorkpiecesCounter" + 1;
+            
+            
+            #Step := 61;
         END_IF;
+        
+    61:
+        //Set everything OFF no counters
+        
+        //Segment Light
+        "ColorA" := false;
+        "ColorB" := false;
+        "ColorC" := false;
+        "Blinking" := false;
+        
+        "ConveyorOn" := false;
+        "Slide 1 Separator On" := false;
+        "Slide 2 Separator On" := false;
+        "Retract Workpiece Stopper" := false;
+        
+        "Timer1Start_TON" := 0;
+        "Timer1Finished_TON" := 0;
+           #Step := 10;
 
 END_CASE;
