@@ -11,9 +11,23 @@
                        PT := t#1s,
                        Q => "Timer3Finished_TON");
 
+IF "LightCurtain_OK"  THEN //LEFT
+    
+    //Distribution and Turning
+    
+    //#Step := 800; //SENSOR LEFT NOT WORKING CAN NOT CONTINUE //50
+    
+    
+    
 
+
+
+    
 CASE #Step OF
     0: //Initial Conditions Distribution and Turning MPS STATION
+        
+        "ConveyorOn" := false;
+        
         
         //Smart Light With Buzzer
         //Operation Mode
@@ -78,6 +92,10 @@ CASE #Step OF
         "Timer3Start_TON" := 0;
         "Timer3Finished_TON" := 0;
         
+        "TurningWorkpiecesCounter" := 0;
+        //NEXT STEP WITHOUT COUNTERS
+        
+        
         #Step := 10;
         
         
@@ -107,14 +125,16 @@ CASE #Step OF
         "3er_Segment_Nxx" := FALSE;
         "3er_Segment_Blink" := TRUE;
         
+        (* //REMOVE BEFORE SUBMISSION SOUND AT THE BEGINNING
         //Buzzer
-        "Buzzer ON/OFF" := FALSE;//change to TRUE final code
+        "Buzzer ON/OFF" := TRUE;//change to TRUE final code
         "BuzzerVolume" := TRUE;
         
         
         //BuzzerType
-        "BuzzerType_4" := FALSE;
-        "BuzzerType_5" := FALSE;
+        "BuzzerType_4" := TRUE;
+        "BuzzerType_5" := TRUE;
+        *)
         
         IF NOT "Sensor_WorkpieceFedder_1F 1=Empty; 0=Workpiece" THEN
             //"ConveyorRight_1F" := false;
@@ -265,6 +285,25 @@ CASE #Step OF
         
     59:    //RIGHT
         
+        "ConveyorRight_1F" := FALSE;
+        "ConveyorLeft_1F" := FALSE;
+        
+        "Timer2Start_TON" := 1;
+        "Timer2Finished_TON" := 0;
+        #Step := 60;
+        
+    60:    //RIGHT
+        IF "Timer2Finished_TON" THEN
+            "ConveyorRight_1F" := TRUE;
+            "ConveyorLeft_1F" := FALSE;
+            
+            //"Timer2Start_TON" := 1;
+            //"Timer2Finished_TON" := 0;
+            #Step := 61;
+        END_IF;
+        
+    61:    //RIGHT
+        
         //Smart Light With Buzzer
         //Operation Mode
         "Mode_Segment" := TRUE;
@@ -287,25 +326,6 @@ CASE #Step OF
         "3er_Segment_xNx" := FALSE;
         "3er_Segment_Nxx" := FALSE;
         "3er_Segment_Blink" := FALSE;
-        
-        "ConveyorRight_1F" := FALSE;
-        "ConveyorLeft_1F" := FALSE;
-        
-        "Timer2Start_TON" := 1;
-        "Timer2Finished_TON" := 0;
-        #Step := 60;
-        
-    60:    //RIGHT
-        IF "Timer2Finished_TON" THEN
-            "ConveyorRight_1F" := TRUE;
-            "ConveyorLeft_1F" := FALSE;
-            
-            //"Timer2Start_TON" := 1;
-            //"Timer2Finished_TON" := 0;
-            #Step := 61;
-        END_IF;
-        
-    61:    //RIGHT
         
         "ConveyorRight_1F" := TRUE;
         "ConveyorLeft_1F" := FALSE;
@@ -364,7 +384,7 @@ CASE #Step OF
             "Mode_Running" := FALSE;
             "Mode_Flexible" := FALSE;
             
-            //Colour and blinking
+            //Colour Blue and blinking
             "1st_Segment_xxN" := FALSE;
             "1st_Segment_xNx" := FALSE;
             "1st_Segment_Nxx" := FALSE;
@@ -443,7 +463,13 @@ CASE #Step OF
         END_IF;
         
     120:// move collect position
+        
+        //CONTINUE
+        "TurningWorkpiecesCounter" := "TurningWorkpiecesCounter" + 1;
+        
         IF "SensorBSide_2T" THEN
+            
+
             
             "TurningWorkpiece_2T" := TRUE;
             "CloseClap_Gripper_2T" := TRUE;
@@ -514,12 +540,70 @@ CASE #Step OF
             #Step := 59;//Move right
             
         END_IF;
-      
+        
+    500:     
+        "Timer3Start_TON" := 1;
+        "Timer3Finished_TON" := 0;
+        #Step := 501;//0
+        
+    501:
+        IF "LightCurtain_OK" THEN
+            //Smart Light With Buzzer
+            //Operation Mode
+            "Mode_Segment" := TRUE;
+            "Mode_Level" := FALSE;
+            "Mode_Running" := FALSE;
+            "Mode_Flexible" := FALSE;
+            
+            //Colour and blinking
+            "1st_Segment_xxN" := TRUE;
+            "1st_Segment_xNx" := FALSE;
+            "1st_Segment_Nxx" := FALSE;
+            "1st_Segment_Blink" := TRUE;
+            
+            "2nd_Segment_xxN" := FALSE;
+            "2nd_Segment_xNx" := FALSE;
+            "2nd_Segment_Nxx" := FALSE;
+            "2nd_Segment_Blink" := FALSE;
+            
+            "3er_Segment_xxN" := FALSE;
+            "3er_Segment_xNx" := FALSE;
+            "3er_Segment_Nxx" := FALSE;
+            "3er_Segment_Blink" := FALSE;
+            
+            //(* REMOVE BEFORE SUBMISSION SOUND AT THE BEGINNING
+    
+            
+            //Buzzer
+            "Buzzer ON/OFF" := TRUE;
+            "BuzzerVolume" := TRUE;
+            
+            //BuzzerType
+            "BuzzerType_4" := FALSE;
+            "BuzzerType_5" := TRUE;
+            //*)
+            
+            #Step := 0;//0
+        END_IF;
+        
+        
+        
         
 END_CASE;
 
 
-
+ELSE
+    
+    //Stop Outputs
+    "ConveyorRight_1F" := FALSE;
+    "ConveyorLeft_1F" := FALSE;
+    "Stopper_1F" := FALSE;
+    "ExtendCylinder_1F" := FALSE;
+    "CloseClap_Gripper_2T" := FALSE;
+    
+    #Step := 500;//59-100
+    
+END_IF;
 
 
 
